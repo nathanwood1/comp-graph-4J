@@ -1,11 +1,14 @@
 package com.github.cg4j;
 
+import com.github.cg4j.exception.IllegalShapeException;
+
 import java.util.Arrays;
 import java.util.Random;
 
 /**
  * The Tensor class represents an N-Dimensional Array, also called a tensor.
  * @since 1.0
+ * @author nathanwood1
  */
 public class Tensor {
     private final float[] vals;
@@ -13,15 +16,17 @@ public class Tensor {
 
     /**
      * Length of the data.
-     * Equivalent to <code>vals.length</code>.
+     * Equivalent to {@code vals.length}.
      * @since 1.0
      */
     public final int length;
 
     /**
      * Creates a tensor from an array of values and a shape.
-     * @param vals A <code>float[]</code> of values. The dimensionality is added by <code>shape</code>.
-     * @param shape An <code>int[]</code> of dimensions. This gives <code>vals</code> dimension.
+     * @param vals A {@code float[]} of values. The dimensionality is added by {@code shape}.
+     * @param shape An {@code int[]} of dimensions. This gives {@code vals} dimension.
+     * @throws IllegalShapeException if the given shape contains any values <= 0.
+     * @throws IllegalShapeException if the length of {@code vals} doesn't equal the length given by {@code shape}
      * @since 1.0
      */
     public Tensor(float[] vals, int[] shape) {
@@ -29,10 +34,32 @@ public class Tensor {
         this.shape = shape;
 
         int length = 1;
-        for (int i : shape) {
-            length *= i;
+        for (int x : shape) {
+            if (x < 0) {
+                throw new IllegalShapeException(
+                        "Shape cannot have any negative values "
+                                + Arrays.toString(shape)
+                );
+            }
+            if (x == 0) {
+                throw new IllegalShapeException(
+                        "Shape cannot have any zeros "
+                                + Arrays.toString(shape)
+                );
+            }
+            length *= x;
         }
         this.length = length;
+
+        if (vals.length != length) {
+            throw new IllegalShapeException(
+                    "Shape doesn't match length of vals ("
+                    + length
+                    + " != "
+                    + vals.length
+                    + ")"
+            );
+        }
     }
 
     private Tensor(float[] vals, int[] shape, int length) {
@@ -43,7 +70,7 @@ public class Tensor {
 
     /**
      * Returns the shape of the tensor.
-     * @return An <code>int[]</code> of the dimensions of the tensor.
+     * @return An {@code int[]} of the dimensions of the tensor.
      * @since 1.0
      */
     public int[] getShape() {
@@ -51,9 +78,9 @@ public class Tensor {
     }
 
     /**
-     * Returns the value at <code>i</code> based on <code>vals</code>
+     * Returns the value at {@code i} based on {@code vals}
      * @param i The index to get.
-     * @return The value at <code>i</code>.
+     * @return The value at {@code i}.
      * @since 1.0
      */
     public float getVal(int i) {
@@ -61,7 +88,7 @@ public class Tensor {
     }
 
     /**
-     * Set the value at <code>i</code> to <code>val</code>.
+     * Set the value at {@code i} to {@code val}.
      * @param i The index to set.
      * @param val The value to set.
      * @since 1.0
@@ -73,7 +100,7 @@ public class Tensor {
     /**
      * Get the value at a list of indices. This has dimensionality.
      * @param indices The list of indices to get.
-     * @return The value at <code>indices</code>.
+     * @return The value at {@code indices}.
      * @since 1.0
      */
     public float getVal(int[] indices) {
@@ -240,7 +267,7 @@ public class Tensor {
     }
 
     /**
-     * Create a Tensor from <code>Math.random()</code>
+     * Create a Tensor from {@code Math.random()}
      * @param lb Lower bound of randomness.
      * @param ub Upper bound of randomness.
      * @param shape The shape of the tensor.
@@ -249,8 +276,8 @@ public class Tensor {
      */
     public static Tensor fromRandom(float lb, float ub, int[] shape) {
         int length = 1;
-        for (int i : shape) {
-            length *= i;
+        for (int x : shape) {
+            length *= x;
         }
 
         float[] vals = new float[length];
@@ -262,7 +289,7 @@ public class Tensor {
     }
 
     /**
-     * Create a Tensor from <code>Random</code>
+     * Create a Tensor from {@code Random}
      * @see java.util.Random
      * @param lb Lower bound of randomness.
      * @param ub Upper bound of randomness.
@@ -272,8 +299,8 @@ public class Tensor {
      */
     public static Tensor fromRandom(Random random, float lb, float ub, int[] shape) {
         int length = 1;
-        for (int i : shape) {
-            length *= i;
+        for (int x : shape) {
+            length *= x;
         }
 
         float[] vals = new float[length];

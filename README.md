@@ -5,7 +5,7 @@ Computational graph for Java.
 
 ## What is a computational graph?
 
-Normally, in computing, we use basic operations to calculate values. A computatinal graph will store the operations needed to operate and run them when it's needed.
+Normally, in computing, we use basic operations to calculate values. A computational graph will store the operations needed to operate and run them when it's needed.
 
 Let's look at a simple example: adding numbers.
 
@@ -34,18 +34,18 @@ Tensor bInput = new TensorInput(new float[]{
 ```
 Finally, we create an `Eval` to feed the data into the graph
 ```java
-Eval eval = Eval.Builder()
+Eval eval = new Eval()
     .addInput(a, aInput)
     .addInput(b, bInput);
 
-System.out.println(eval.eval(c).arrayToString());
+System.out.println(eval.evaluate(c).arrayToString());
 ```
 This will return `[[5.0], [4.0], [4.0]]`. This was all ran by the computational graph.
 ## Why is this better‽
 
-This may seem a little unnecessary and convoluted, but it is actually extremly helpful.
+This may seem a little unnecessary and convoluted, but it is actually extremely helpful.
 
-Because we first specified what we are doing, we can calculate the gradients and other useful things. This is mostly used for Neural Networks as (most of them) use gradient decent, relient on calculus.
+Because we first specified what we are doing, we can calculate the gradients and other useful things. This is mostly used for Neural Networks as (most of them) use gradient decent, reliant on calculus.
 
 We can also 'batch operate' data. In the example above, we ran 3 sums simultaneously.
 

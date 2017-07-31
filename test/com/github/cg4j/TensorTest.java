@@ -1,11 +1,27 @@
 package com.github.cg4j;
 
+import com.github.cg4j.exception.IllegalShapeException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
 class TensorTest {
+
+    @Test
+    void constructorFail() {
+        boolean a = true;
+        try {
+            Tensor tensor = new Tensor(new float[4 * 3 * 5], new int[]{4, 3, 5});
+            Assertions.assertTrue(true);
+            a = false;
+            tensor = new Tensor(new float[4 * 3 * 2], new int[]{4, 3, 5});
+            Assertions.assertTrue(false);
+        } catch (IllegalShapeException e) {
+            Assertions.assertFalse(a);
+        }
+    }
+
     @Test
     void getShape() {
         Tensor tensor = new Tensor(new float[4 * 2 * 5 * 2], new int[]{4, 2, 5, 2});
