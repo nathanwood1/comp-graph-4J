@@ -1,7 +1,7 @@
 # comp-graph-4J
 Computational graph for Java.
 
-***Please note that this is still WIP! It is currently non-functional!***
+***Please note that this is still WIP! Currently there are not enough nodes and no gradient decent!***
 
 ## What is a computational graph?
 
