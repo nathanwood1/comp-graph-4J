@@ -8,7 +8,7 @@ import com.github.cg4j.Tensor;
  * @since 1.0
  * @author nathanwood1
  */
-public class InputNode implements Node {
+public class InputNode extends Node {
     private int[] shape;
 
     /**

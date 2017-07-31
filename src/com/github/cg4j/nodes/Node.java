@@ -4,23 +4,23 @@ import com.github.cg4j.Eval;
 import com.github.cg4j.Tensor;
 
 /**
- * This interface specifies the requirements to be a node.
+ * This abstract class specifies the requirements to be a node.
  * @since 1.0
  */
-public interface Node {
+public abstract class Node {
     /**
      * Returns the shape of the output.
      * @return {@code int[]} shape.
      * @since 1.0
      */
-    int[] getShape();
+    public abstract int[] getShape();
 
     /**
      * Returns a list of all children connected to this node.
      * @return {@code Node[]} of children.
      * @since 1.0
      */
-    Node[] getChildren();
+    public abstract Node[] getChildren();
 
     /**
      * The method for calculating the output.
@@ -30,5 +30,5 @@ public interface Node {
      * @return The {@code Tensor} output.
      * @since 1.0
      */
-    Tensor evaluate(Eval e);
+    public abstract Tensor evaluate(Eval e);
 }

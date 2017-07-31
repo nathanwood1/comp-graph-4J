@@ -11,7 +11,7 @@ import java.util.Arrays;
  * @since 1.0
  * @author nathanwood1
  */
-public class MatrixMultiplicationNode implements Node {
+public class MatrixMultiplicationNode extends Node {
     private final Node childA;
     private final Node childB;
 
@@ -94,12 +94,29 @@ public class MatrixMultiplicationNode implements Node {
      * @see Eval
      * @param e The evaluator.
      * @return The output of the operation.
+     * @throws IllegalShapeException if aShape[-1] != bShape[-2].
+     * This can happen if you specify '-1' for those dimensions.
      * @since 1.0
      */
     @Override
     public Tensor evaluate(Eval e) {
         Tensor a = e.evaluate(childA);
         Tensor b = e.evaluate(childB);
+
+        // In case we didn't specify the last value of the tensor, check it's the same here.
+        if (a.getShape()[a.getShape().length - 1] != b.getShape()[b.getShape().length - 2]) {
+            throw new IllegalShapeException(
+                    "Cannot matrix multiply shapes "
+                            + Arrays.toString(a.getShape())
+                            + " and "
+                            + Arrays.toString(b.getShape())
+                            + " because aShape[-1] != bShape[-2] ("
+                            + a.getShape()[a.getShape().length - 1]
+                            + " != "
+                            + b.getShape()[b.getShape().length - 2]
+                            + ")"
+            );
+        }
 
         int[] shape = new int[a.getShape().length + b.getShape().length - 2];
         System.arraycopy(a.getShape(), 0, shape, 0, a.getShape().length - 1);
@@ -115,12 +132,13 @@ public class MatrixMultiplicationNode implements Node {
 
         int iIter = a.getShape()[a.getShape().length - 1];
         int jIter = b.getShape()[b.getShape().length - 1] * b.getShape()[b.getShape().length - 2];
-        for (int i = 0; i < a.length; i += iIter) {
-            for (int j1 = 0; j1 < b.length; j1 += jIter) {
+        for (int i = 0; i < a.length; i += iIter) { // Iterate over 'a' but not the last dimension
+            for (int j1 = 0; j1 < b.length; j1 += jIter) { // Iterate over 'b' but not the second-to-last dimension
                 for (int j2 = 0; j2 < b.getShape()[b.getShape().length - 1]; j2++) {
-                    int j = j1 + j2;
+                    int j = j1 + j2; // j1 + j2 gives us the proper index.
+                    // Get the output index
                     int outI = (i / iIter) * (b.length / b.getShape()[b.getShape().length - 2]) + j1 / b.getShape()[b.getShape().length - 2] + j2;
-                    for (int k = 0; k < iIter; k++) {
+                    for (int k = 0; k < iIter; k++) { // For each in the dot product, multiply them.
                         out.setVal(outI, out.getVal(outI)
                                 + a.getVal(i + k)
                                 * b.getVal(j + k * b.getShape()[b.getShape().length - 1])

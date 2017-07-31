@@ -30,10 +30,10 @@ public class Tensor {
      * @since 1.0
      */
     public Tensor(float[] vals, int[] shape) {
-        this.vals = vals;
+        this.vals = vals; //Assign the inputs
         this.shape = shape;
 
-        int length = 1;
+        int length = 1; //Get the length by multiplying all the values in 'shape' together
         for (int x : shape) {
             if (x < 0) {
                 throw new IllegalShapeException(
@@ -51,7 +51,7 @@ public class Tensor {
         }
         this.length = length;
 
-        if (vals.length != length) {
+        if (vals.length != length) { //If the shape's values don't match the vals' value, throw an exception
             throw new IllegalShapeException(
                     "Shape doesn't match length of vals ("
                     + length
@@ -105,7 +105,7 @@ public class Tensor {
      */
     public float getVal(int[] indices) {
         int i = 0;
-        for (int j = 0; j < indices.length; j++) {
+        for (int j = 0; j < indices.length; j++) { //Convert the indices into a single index
             int iI = indices[j];
             for (int k = indices.length - 1; k > j; k--) {
                 iI *= shape[k];
@@ -123,7 +123,7 @@ public class Tensor {
      */
     public void setVal(int[] indices, float val) {
         int i = 0;
-        for (int j = 0; j < indices.length; j++) {
+        for (int j = 0; j < indices.length; j++) { //Convert the indices into a single index
             int iI = indices[j];
             for (int k = indices.length - 1; k > j; k--) {
                 iI *= shape[k];
@@ -141,7 +141,7 @@ public class Tensor {
      */
     public int getIndexFromIndices(int[] indices) {
         int i = 0;
-        for (int j = 0; j < indices.length; j++) {
+        for (int j = 0; j < indices.length; j++) { //Convert the indices into a single index
             int iI = indices[j];
             for (int k = indices.length - 1; k > j; k--) {
                 iI *= shape[k];
@@ -159,7 +159,7 @@ public class Tensor {
      */
     public int[] getIndicesFromIndex(int i) {
         int[] indices = new int[shape.length];
-        for (int j = 0; j < shape.length; j++) {
+        for (int j = 0; j < shape.length; j++) { // Convert the index into an array of indices
             int iI = 1;
             for (int k = shape.length - 1; k > j; k--) {
                 iI *= shape[k];
@@ -178,7 +178,7 @@ public class Tensor {
      */
     @Override
     public boolean equals(Object o) {
-        if (o instanceof Tensor) {
+        if (o instanceof Tensor) { // Check 'o' is a Tensor
             Tensor other = (Tensor) o;
             if (Arrays.equals(other.shape, this.shape)) {
                 if (Arrays.equals(other.vals, this.vals)) {
@@ -197,15 +197,15 @@ public class Tensor {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Tensor(Shape=");
+        sb.append("Tensor(Shape="); // Display data about the object
         sb.append(Arrays.toString(shape));
         sb.append(", Data=");
 
         int[] shapeI = new int[shape.length];
-        sb.append(new String(new byte[shape.length]).replaceAll("\u0000", "["));
+        sb.append(new String(new byte[shape.length]).replaceAll("\u0000", "[")); // Open initial brackets
         for (int j = 0; j < length; j++) {
-            sb.append(vals[j]);
-            int closed = 0;
+            sb.append(vals[j]); // Add the value
+            int closed = 0; // Check and count how many brackets were closed
             for (int k = shape.length - 1; k >= 0; k--) {
                 shapeI[k]++;
                 if (shapeI[k] == shape[k]) {
@@ -215,11 +215,11 @@ public class Tensor {
                     break;
                 }
             }
-            if (closed == 0) {
+            if (closed == 0) { // If none, add a comma
                 sb.append(", ");
-            } else if (j == length - 1) {
+            } else if (j == length - 1) { // If we're at the end, close all brackets
                 sb.append(new String(new byte[closed]).replaceAll("\u0000", "]"));
-            } else {
+            } else { // Otherwise, close brackets and open them again
                 sb.append(new String(new byte[closed]).replaceAll("\u0000", "]"));
                 sb.append(", ");
                 sb.append(new String(new byte[closed]).replaceAll("\u0000", "["));
@@ -239,10 +239,10 @@ public class Tensor {
         StringBuilder sb = new StringBuilder();
 
         int[] shapeI = new int[shape.length];
-        sb.append(new String(new byte[shape.length]).replaceAll("\u0000", "["));
+        sb.append(new String(new byte[shape.length]).replaceAll("\u0000", "[")); // Open initial brackets
         for (int j = 0; j < length; j++) {
-            sb.append(vals[j]);
-            int closed = 0;
+            sb.append(vals[j]); // Add the value
+            int closed = 0; // Check and count how many brackets were closed
             for (int k = shape.length - 1; k >= 0; k--) {
                 shapeI[k]++;
                 if (shapeI[k] == shape[k]) {
@@ -252,11 +252,11 @@ public class Tensor {
                     break;
                 }
             }
-            if (closed == 0) {
+            if (closed == 0) { // If none, add a comma
                 sb.append(", ");
-            } else if (j == length - 1) {
+            } else if (j == length - 1) { // If we're at the end, close all brackets
                 sb.append(new String(new byte[closed]).replaceAll("\u0000", "]"));
-            } else {
+            } else { // Otherwise, close brackets and open them again
                 sb.append(new String(new byte[closed]).replaceAll("\u0000", "]"));
                 sb.append(", ");
                 sb.append(new String(new byte[closed]).replaceAll("\u0000", "["));
@@ -275,14 +275,14 @@ public class Tensor {
      * @since 1.0
      */
     public static Tensor fromRandom(float lb, float ub, int[] shape) {
-        int length = 1;
+        int length = 1; // Get the length by multiplying the shapes together
         for (int x : shape) {
             length *= x;
         }
 
         float[] vals = new float[length];
         for (int i = 0; i < length; i++) {
-            vals[i] = ((float) Math.random()) * (ub - lb) + lb;
+            vals[i] = ((float) Math.random()) * (ub - lb) + lb; // Put the random value between lb and ub
         }
 
         return new Tensor(vals, shape, length);
@@ -298,14 +298,14 @@ public class Tensor {
      * @since 1.0
      */
     public static Tensor fromRandom(Random random, float lb, float ub, int[] shape) {
-        int length = 1;
+        int length = 1; // Get the length by multiplying the shapes together
         for (int x : shape) {
             length *= x;
         }
 
         float[] vals = new float[length];
         for (int i = 0; i < length; i++) {
-            vals[i] = random.nextFloat() * (ub - lb) + lb;
+            vals[i] = random.nextFloat() * (ub - lb) + lb; // Put the random value between lb and ub
         }
 
         return new Tensor(vals, shape, length);

@@ -3,6 +3,7 @@ package com.github.cg4j;
 import com.github.cg4j.exception.IllegalShapeException;
 import com.github.cg4j.exception.NoInputSpecifiedException;
 import com.github.cg4j.nodes.InputNode;
+import com.github.cg4j.nodes.MatrixMultiplicationNode;
 import com.github.cg4j.nodes.Node;
 
 import java.util.Arrays;
@@ -39,21 +40,21 @@ public class Eval {
         if (shape1.length != shape2.length) {
             throw new IllegalShapeException(
                     "Input data doesn't have the same dimensionality as the input node ("
-                            + Arrays.toString(shape1)
-                            + ".length != "
-                            + Arrays.toString(shape2)
-                            + ".length)"
+                    + Arrays.toString(shape1)
+                    + ".length != "
+                    + Arrays.toString(shape2)
+                    + ".length)"
             );
         }
         for (int i = 0; i < shape1.length; i++) {
-            if (shape1[i] != -1) {
+            if (shape1[i] != -1) { // '-1' means we haven't specified a dimension yet
                 if (shape1[i] != shape2[i]) {
                     throw new IllegalShapeException(
                             "Input data doesn't have the same shape as input node ("
-                                    + Arrays.toString(shape1)
-                                    + " != "
-                                    + Arrays.toString(shape2)
-                                    + ")"
+                            + Arrays.toString(shape1)
+                            + " != "
+                            + Arrays.toString(shape2)
+                            + ")"
                     );
                 }
             }
@@ -71,10 +72,10 @@ public class Eval {
      * @since 1.0
      */
     public Tensor evaluate(Node node) {
-        if (tensorData.containsKey(node)) {
+        if (tensorData.containsKey(node)) { // If we've already calculated it, just use that value
             return tensorData.get(node);
         } else {
-            if (node instanceof InputNode) {
+            if (node instanceof InputNode) { // If it's an input node, the data should already be there.
                 throw new NoInputSpecifiedException(
                         "No input was specified for "
                         + node

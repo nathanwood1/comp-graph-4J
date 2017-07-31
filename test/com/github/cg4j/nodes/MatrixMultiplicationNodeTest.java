@@ -2,10 +2,9 @@ package com.github.cg4j.nodes;
 
 import com.github.cg4j.Eval;
 import com.github.cg4j.Tensor;
+import com.github.cg4j.exception.IllegalShapeException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
 
 class MatrixMultiplicationNodeTest {
     @Test
@@ -112,6 +111,35 @@ class MatrixMultiplicationNodeTest {
                 139, 154,
                 229, 244,
         }, new int[]{1, 2, 2, 2}).equals(eval.evaluate(c)));
+    }
+
+    @Test
+    void evaluate4() {
+        InputNode a = new InputNode(new int[]{2, -1});
+        InputNode b = new InputNode(new int[]{-1, 2});
+        Node output = new MatrixMultiplicationNode(a, b);
+
+        Tensor aI = new Tensor(new float[2 * 3], new int[]{2, 3});
+        Tensor bI = new Tensor(new float[3 * 2], new int[]{3, 2});
+
+        Eval e = new Eval()
+                .addInput(a, aI)
+                .addInput(b, bI);
+
+        e.evaluate(output);
+
+        try {
+            aI = new Tensor(new float[2 * 3], new int[]{2, 3});
+            bI = new Tensor(new float[4 * 2], new int[]{4, 2});
+            e = new Eval()
+                    .addInput(a, aI)
+                    .addInput(b, bI);
+
+            e.evaluate(output);
+            Assertions.assertTrue(false);
+        } catch (IllegalShapeException ise) {
+            Assertions.assertTrue(true);
+        }
     }
 
 }
