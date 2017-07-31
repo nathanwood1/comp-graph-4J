@@ -120,4 +120,19 @@ class TensorTest {
         Assertions.assertTrue("Tensor(Shape=[2, 3, 2], Data=[[[0.0, 1.0], [2.0, 3.0], [4.0, 5.0]], [[6.0, 7.0], [8.0, 9.0], [10.0, 11.0]]])".equals(tensor.toString()));
     }
 
+    @Test
+    void arrayToStringTest() {
+        Tensor tensor = new Tensor(new float[]{
+                0, 1,
+                2, 3,
+                4, 5,
+
+                6, 7,
+                8, 9,
+                10, 11
+        }, new int[]{2, 3, 2});
+
+        Assertions.assertTrue("[[[0.0, 1.0], [2.0, 3.0], [4.0, 5.0]], [[6.0, 7.0], [8.0, 9.0], [10.0, 11.0]]]".equals(tensor.arrayToString()));
+    }
+
 }

@@ -204,6 +204,42 @@ public class Tensor {
     }
 
     /**
+     * Same as toString() but doesn't display 'Tensor(Shape=...'
+     * @return String summary.
+     * @since 1.0
+     */
+    public String arrayToString() {
+        StringBuilder sb = new StringBuilder();
+
+        int[] shapeI = new int[shape.length];
+        sb.append(new String(new byte[shape.length]).replaceAll("\u0000", "["));
+        for (int j = 0; j < length; j++) {
+            sb.append(vals[j]);
+            int closed = 0;
+            for (int k = shape.length - 1; k >= 0; k--) {
+                shapeI[k]++;
+                if (shapeI[k] == shape[k]) {
+                    shapeI[k] = 0;
+                    closed++;
+                } else {
+                    break;
+                }
+            }
+            if (closed == 0) {
+                sb.append(", ");
+            } else if (j == length - 1) {
+                sb.append(new String(new byte[closed]).replaceAll("\u0000", "]"));
+            } else {
+                sb.append(new String(new byte[closed]).replaceAll("\u0000", "]"));
+                sb.append(", ");
+                sb.append(new String(new byte[closed]).replaceAll("\u0000", "["));
+            }
+        }
+
+        return sb.toString();
+    }
+
+    /**
      * Create a Tensor from <code>Math.random()</code>
      * @param lb Lower bound of randomness.
      * @param ub Upper bound of randomness.
