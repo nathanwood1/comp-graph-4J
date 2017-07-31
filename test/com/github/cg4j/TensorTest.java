@@ -3,7 +3,6 @@ package com.github.cg4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Random;
 
 class TensorTest {
@@ -14,7 +13,7 @@ class TensorTest {
     }
 
     @Test
-    void getValI() {
+    void getSetValI() {
         int[] shape = {4, 3, 2};
         float[] vals = new float[4 * 3 * 2];
 
@@ -33,17 +32,7 @@ class TensorTest {
     }
 
     @Test
-    void indicesToAndFromIndex() {
-        Tensor tensor = Tensor.fromRandom(-1, 1, new int[]{4, 3, 2});
-
-        for (int i = 0; i < 4 * 3 *  2; i++) {
-            Assertions.assertEquals(i, tensor.getIndexFromIndices(tensor.getIndicesFromIndex(i)));
-            Assertions.assertEquals(tensor.getVal(i), tensor.getVal(tensor.getIndicesFromIndex(i)));
-        }
-    }
-
-    @Test
-    void setGetValIs() {
+    void getSetValIs() {
         int[] shape = {4, 3, 2};
         float[] vals = new float[4 * 3 * 2];
 
@@ -62,6 +51,16 @@ class TensorTest {
                     Assertions.assertEquals(random, tensor.getVal(new int[]{x, y, z}));
                 }
             }
+        }
+    }
+
+    @Test
+    void indicesToAndFromIndex() {
+        Tensor tensor = Tensor.fromRandom(-1, 1, new int[]{4, 3, 2});
+
+        for (int i = 0; i < 4 * 3 *  2; i++) {
+            Assertions.assertEquals(i, tensor.getIndexFromIndices(tensor.getIndicesFromIndex(i)));
+            Assertions.assertEquals(tensor.getVal(i), tensor.getVal(tensor.getIndicesFromIndex(i)));
         }
     }
 
