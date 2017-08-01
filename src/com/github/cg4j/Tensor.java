@@ -2,6 +2,7 @@ package com.github.cg4j;
 
 import com.github.cg4j.exception.IllegalShapeException;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -10,7 +11,7 @@ import java.util.Random;
  * @since 1.0
  * @author nathanwood1
  */
-public class Tensor {
+public class Tensor implements Serializable {
     private final float[] vals;
     private final int[] shape;
 

@@ -2,8 +2,7 @@ package com.github.cg4j;
 
 import com.github.cg4j.exception.IllegalShapeException;
 import com.github.cg4j.exception.NoInputSpecifiedException;
-import com.github.cg4j.nodes.InputNode;
-import com.github.cg4j.nodes.MatrixMultiplicationNode;
+import com.github.cg4j.nodes.io.InputNode;
 import com.github.cg4j.nodes.Node;
 
 import java.util.Arrays;
@@ -34,7 +33,7 @@ public class Eval {
      * @since 1.0
      */
     public Eval addInput(InputNode node, Tensor input) {
-        int[] shape1 = node.getShape();
+        int[] shape1 = node.shape;
         int[] shape2 = input.getShape();
 
         if (shape1.length != shape2.length) {
@@ -65,7 +64,6 @@ public class Eval {
 
     /**
      * Calculate the value of a {@code Node}.
-     * Use this instead of {@code Node#evaluate}.
      * @param node The node to evaluate.
      * @return The value.
      * @throws NoInputSpecifiedException if no input was given for this node.
