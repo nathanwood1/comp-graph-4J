@@ -12,6 +12,7 @@ public abstract class Node {
 
     public final String name;
     public final int[] shape;
+    public final int length;
 
     protected Node[] children;
 
@@ -19,17 +20,34 @@ public abstract class Node {
         this.children = children;
         this.shape = shape;
         if (name == null) {
-            this.name = nodeClassName() + "_" + stringGlobalCounter++;
+            this.name = getNodeClassName() + "_" + stringGlobalCounter++;
         } else {
             this.name = name;
         }
+        int length = 1;
+        for (int x : shape) {
+            length *= x;
+        }
+        this.length = length;
     }
 
-    public abstract String nodeClassName();
+    public abstract String getNodeClassName();
 
     public Node[] getChildren() {
         return children;
     }
+
+    public void addChild(Node child) {
+        if (!canAddChildren()) {
+            return;
+        }
+        Node[] childrenU = new Node[children.length + 1];
+        System.arraycopy(children, 0, childrenU, 0, children.length);
+        childrenU[children.length] = child;
+        this.children = childrenU;
+    }
+
+    protected abstract boolean canAddChildren();
 
     public abstract Tensor evaluate(Eval e);
 

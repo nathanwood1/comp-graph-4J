@@ -34,8 +34,13 @@ public class InputNode extends Node {
      * @since 1.0
      */
     @Override
-    public String nodeClassName() {
+    public String getNodeClassName() {
         return "InputNode";
+    }
+
+    @Override
+    protected boolean canAddChildren() {
+        return false;
     }
 
     /**

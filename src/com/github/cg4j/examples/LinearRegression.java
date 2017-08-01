@@ -1,7 +1,14 @@
 package com.github.cg4j.examples;
 
 import com.github.cg4j.Tensor;
+import com.github.cg4j.nodes.Node;
 import com.github.cg4j.nodes.io.InputNode;
+import com.github.cg4j.nodes.io.VariableNode;
+import com.github.cg4j.nodes.math.AdditionNode;
+import com.github.cg4j.nodes.math.MeanNode;
+import com.github.cg4j.nodes.math.MultiplicationNode;
+import com.github.cg4j.nodes.math.SquareNode;
+import com.github.cg4j.nodes.math.SubtractionNode;
 
 import java.io.IOException;
 import java.net.URL;
@@ -10,18 +17,18 @@ import java.util.Scanner;
 public class LinearRegression {
 
     public static void main(String[] args) {
-//        VariableNode m = new VariableNode(new Tensor(new float[]{3f}, new int[]{1}));
-//        VariableNode c = new VariableNode(new Tensor(new float[]{-1f}, new int[]{1}));
-//
+        VariableNode m = new VariableNode(new Tensor(new float[]{3f}, new int[]{1}));
+        VariableNode c = new VariableNode(new Tensor(new float[]{-1f}, new int[]{1}));
+
         InputNode x = new InputNode(new int[]{-1, 1});
         x.evaluate(null);
 
-//
-//        Node y = new MultiplyNode(x, m);
-//        y = new AdditionNode(y, c);
-//
-//        InputNode yTarget = new InputNode(new int[]{-1, 1});
-//        Node cost = /*new MeanNode*/(new SquareNode(new SubtractionNode(yTarget, y)));
+
+        Node y = new MultiplicationNode(x, m);
+        y = new AdditionNode(y, c);
+
+        InputNode yTarget = new InputNode(new int[]{-1, 1});
+        Node cost = new MeanNode(new SquareNode(new SubtractionNode(yTarget, y)));
 //
 //        // The OutputNode must be used if using the GPU
 //        OutputNode yOut = new OutputNode(y);
