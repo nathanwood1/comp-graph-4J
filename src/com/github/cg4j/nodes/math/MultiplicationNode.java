@@ -43,6 +43,14 @@ public class MultiplicationNode extends Node {
 
     @Override
     public void createGradients(Optimizer optimizer, Node parentDelta) {
-
+        for (Node childI : children) {
+            MultiplicationNode m = new MultiplicationNode();
+            for (Node childJ : children) {
+                if (childI != childJ) {
+                    m.addChild(childJ);
+                }
+            }
+            childI.createGradients(optimizer, m);
+        }
     }
 }

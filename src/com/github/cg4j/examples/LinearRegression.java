@@ -1,14 +1,18 @@
 package com.github.cg4j.examples;
 
+import com.github.cg4j.Eval;
 import com.github.cg4j.Tensor;
 import com.github.cg4j.nodes.Node;
 import com.github.cg4j.nodes.io.InputNode;
+import com.github.cg4j.nodes.io.OutputNode;
 import com.github.cg4j.nodes.io.VariableNode;
 import com.github.cg4j.nodes.math.AdditionNode;
 import com.github.cg4j.nodes.math.MeanNode;
 import com.github.cg4j.nodes.math.MultiplicationNode;
 import com.github.cg4j.nodes.math.SquareNode;
 import com.github.cg4j.nodes.math.SubtractionNode;
+import com.github.cg4j.optimizers.GradientDescentOptimizer;
+import com.github.cg4j.optimizers.Optimizer;
 
 import java.io.IOException;
 import java.net.URL;
@@ -23,47 +27,34 @@ public class LinearRegression {
         InputNode x = new InputNode(new int[]{-1, 1});
         x.evaluate(null);
 
-
         Node y = new MultiplicationNode(x, m);
         y = new AdditionNode(y, c);
+        OutputNode yOut = new OutputNode(y);
 
         InputNode yTarget = new InputNode(new int[]{-1, 1});
         Node cost = new MeanNode(new SquareNode(new SubtractionNode(yTarget, y)));
-//
-//        // The OutputNode must be used if using the GPU
-//        OutputNode yOut = new OutputNode(y);
-//        OutputNode costOut = new OutputNode(cost);
-//
-//        Optimizer optimizer = new GradientDescentOptimizer();
-//        optimizer.minimize(costOut);
-//
-//        Tensor xInputData = new Tensor(new float[]{
-//                1,
-//                3
-//        }, new int[]{2, 1});
-//        Tensor yTargetInputData = new Tensor(new float[]{
-//                3,
-//                6
-//        }, new int[]{2, 1});
-//
-//        float learningRate = 0.001f;
-//
-////        Tensor inputData = getData();
-//        for (int i = 0; i < 10000; i++) {
-//            Eval eval = new Eval()
-//                    .addInput(x, xInputData)
-//                    .addInput(yTarget, yTargetInputData);
-//
-//            eval.evaluate(cost);
-//            costOut.evaluateDelta(eval, eval.evaluate(costOut));
-//
-//            System.out.println(m.val.getVal(0) - m.delta.getVal(0) * learningRate);
-//
-////            m.val.setVal(0, m.val.getVal(0) - m.delta.getVal(0) * learningRate);
-////            c.val.setVal(0, c.val.getVal(0) - c.delta.getVal(0) * learningRate);
-//
-////            System.out.println(cost + ", " + eval.evaluate(yOut) + ", " + m.val + ", " + c.val);
-//        }
+
+        GradientDescentOptimizer optimizer = new GradientDescentOptimizer();
+        optimizer.minimize(cost);
+
+        Tensor xInputData = new Tensor(new float[]{
+                1,
+                3
+        }, new int[]{2, 1});
+        Tensor yTargetInputData = new Tensor(new float[]{
+                3,
+                6
+        }, new int[]{2, 1});
+
+        float learningRate = 0.001f;
+
+        for (int i = 0; i < 100000; i++) {
+            Eval eval = new Eval()
+                    .addInput(x, xInputData)
+                    .addInput(yTarget, yTargetInputData);
+
+            optimizer.run(eval);
+        }
     }
 
     public static Tensor getData() {
