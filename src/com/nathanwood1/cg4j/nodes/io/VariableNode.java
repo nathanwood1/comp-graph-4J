@@ -6,6 +6,11 @@ import com.nathanwood1.cg4j.nodes.Node;
 import com.nathanwood1.cg4j.nodes.math.AdditionNode;
 import com.nathanwood1.cg4j.optimizers.Optimizer;
 
+import java.util.HashMap;
+
+/**
+ * A variable node creates a value that can be modified to minimize/maximize a function
+ */
 public class VariableNode extends Node {
     public final Tensor val;
     private boolean gradientCreated = false;
@@ -21,24 +26,31 @@ public class VariableNode extends Node {
     }
 
     @Override
-    public String getNodeClassName() {
+    protected String getNodeClassName() {
         return "VariableNode";
     }
 
+    /**
+     * Use {@code Eval#evaluate(Node)}
+     *
+     * @see Eval#evaluate(Node)
+     */
     @Override
     public Tensor evaluate(Eval e) {
         return val;
     }
 
+    /**
+     * Creates the gradients.
+     * @param deltas The deltas of all variables.
+     * @param parentDelta Last node's delta.
+     */
     @Override
-    public void createGradients(Optimizer optimizer, Node parentDelta) {
+    public void createGradients(HashMap<VariableNode, Node> deltas, Node parentDelta) {
         if (gradientCreated) {
-            ((VariableDeltaNode) optimizer.deltas.get(this)).addChild(parentDelta);
+            ((VariableDeltaNode) deltas.get(this)).addChild(parentDelta);
         } else {
-            if (!optimizer.deltas.containsKey(this)) {
-                return;
-            }
-            optimizer.deltas.put(this, new VariableDeltaNode(parentDelta));
+            deltas.put(this, new VariableDeltaNode(parentDelta));
             gradientCreated = true;
         }
     }
@@ -56,7 +68,7 @@ public class VariableNode extends Node {
         }
 
         @Override
-        public String getNodeClassName() {
+        protected String getNodeClassName() {
             return "VariableDeltaNode";
         }
 

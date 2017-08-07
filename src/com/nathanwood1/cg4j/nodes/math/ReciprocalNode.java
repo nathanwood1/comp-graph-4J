@@ -4,41 +4,36 @@ import com.nathanwood1.cg4j.Eval;
 import com.nathanwood1.cg4j.Tensor;
 import com.nathanwood1.cg4j.nodes.Node;
 import com.nathanwood1.cg4j.nodes.io.VariableNode;
-import com.nathanwood1.cg4j.optimizers.Optimizer;
 
 import java.util.HashMap;
 
-public class NegationNode extends Node {
-    public NegationNode(String name, Node child) {
+public class ReciprocalNode extends Node {
+    public ReciprocalNode(String name, Node child) {
         super(child.shape, name, child);
     }
 
-    public NegationNode(Node child) {
+    public ReciprocalNode(Node child) {
         super(child.shape, null, child);
     }
 
     @Override
     protected String getNodeClassName() {
-        return "NegationNode";
+        return "ReciprocalNode";
     }
 
-    /**
-     * Use {@code Eval#evaluate(Node)}
-     *
-     * @see Eval#evaluate(Node)
-     */
     @Override
     public Tensor evaluate(Eval e) {
         Tensor in = e.evaluate(children[0]);
         Tensor out = new Tensor(new float[in.length], in.shape);
         for (int i = 0; i < out.length; i++) {
-            out.setVal(i, -in.getVal(i));
+            out.setVal(i, 1 / in.getVal(i));
         }
         return out;
     }
 
     @Override
     public void createGradients(HashMap<VariableNode, Node> deltas, Node parentDelta) {
-        children[0].createGradients(deltas, new NegationNode(name + "_Gradient", parentDelta));
+        Node delta = new NegationNode(new ReciprocalNode(new SquareNode(parentDelta)));
+        children[0].createGradients(deltas, delta);
     }
 }

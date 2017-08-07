@@ -2,9 +2,11 @@ package com.nathanwood1.cg4j.nodes;
 
 import com.nathanwood1.cg4j.Eval;
 import com.nathanwood1.cg4j.Tensor;
+import com.nathanwood1.cg4j.nodes.io.VariableNode;
 import com.nathanwood1.cg4j.optimizers.Optimizer;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 //TODO: ADD JAVADOC FOR ALL NODES
 public abstract class Node {
@@ -40,7 +42,7 @@ public abstract class Node {
         return true;
     }
 
-    public abstract String getNodeClassName();
+    protected abstract String getNodeClassName();
 
     public Node[] getChildren() {
         return children;
@@ -48,7 +50,7 @@ public abstract class Node {
 
     public abstract Tensor evaluate(Eval e);
 
-    public abstract void createGradients(Optimizer optimizer, Node parentDelta);
+    public abstract void createGradients(HashMap<VariableNode, Node> deltas, Node parentDelta);
 
     @Override
     public String toString() {

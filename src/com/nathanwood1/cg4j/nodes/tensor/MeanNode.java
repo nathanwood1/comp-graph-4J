@@ -3,8 +3,11 @@ package com.nathanwood1.cg4j.nodes.tensor;
 import com.nathanwood1.cg4j.Eval;
 import com.nathanwood1.cg4j.Tensor;
 import com.nathanwood1.cg4j.nodes.Node;
+import com.nathanwood1.cg4j.nodes.io.VariableNode;
 import com.nathanwood1.cg4j.nodes.math.MultiplicationNode;
 import com.nathanwood1.cg4j.optimizers.Optimizer;
+
+import java.util.HashMap;
 
 public class MeanNode extends Node {
     final int[][] lastShape;
@@ -24,10 +27,15 @@ public class MeanNode extends Node {
     }
 
     @Override
-    public String getNodeClassName() {
+    protected String getNodeClassName() {
         return "MeanNode";
     }
 
+    /**
+     * Use {@code Eval#evaluate(Node)}
+     *
+     * @see Eval#evaluate(Node)
+     */
     @Override
     public Tensor evaluate(Eval e) {
         N = 0;
@@ -47,9 +55,9 @@ public class MeanNode extends Node {
     }
 
     @Override
-    public void createGradients(Optimizer optimizer, Node parentDelta) {
+    public void createGradients(HashMap<VariableNode, Node> deltas, Node parentDelta) {
         for (int i = 0; i < children.length; i++) {
-            children[i].createGradients(optimizer, parentDelta);
+            children[i].createGradients(deltas, parentDelta);
         }
     }
 }

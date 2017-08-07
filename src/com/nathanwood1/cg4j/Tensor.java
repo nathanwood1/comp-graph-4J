@@ -318,11 +318,27 @@ public class Tensor implements Serializable {
     }
 
     /**
-     * Copies a portion from the
+     * Copies a portion from the values.
+     *
+     * @param toCopyTo The float[] to copy to.
+     * @param start The start index.
+     * @param length The length to copy.
      */
     public float[] copy(float[] toCopyTo, int start, int length) {
         System.arraycopy(vals, start, toCopyTo, 0, length);
         return toCopyTo;
+    }
+
+    /**
+     * Returns 'vals'.
+     * This method is not recommended.
+     * Please use {@code Tensor#getVal} and {@code Tensor#setVal} instead.
+     * @see Tensor#getVal(int)
+     * @see Tensor#setVal(int, float)
+     * @return float[] of values.
+     */
+    public float[] getVals() {
+        return vals;
     }
 
 }

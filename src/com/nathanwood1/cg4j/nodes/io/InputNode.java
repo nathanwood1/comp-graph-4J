@@ -5,6 +5,15 @@ import com.nathanwood1.cg4j.Tensor;
 import com.nathanwood1.cg4j.nodes.Node;
 import com.nathanwood1.cg4j.optimizers.Optimizer;
 
+import java.util.HashMap;
+
+/**
+ * An input node feeds data into the graph.
+ *
+ * @author nathanwood1
+ * @see Node
+ * @since 1.0
+ */
 public class InputNode extends Node {
 
     /**
@@ -30,14 +39,8 @@ public class InputNode extends Node {
         super(shape, name);
     }
 
-    /**
-     * Returns unique name for this node.
-     *
-     * @return {@code "InputNode"}
-     * @since 1.0
-     */
     @Override
-    public String getNodeClassName() {
+    protected String getNodeClassName() {
         return "InputNode";
     }
 
@@ -52,6 +55,6 @@ public class InputNode extends Node {
     }
 
     @Override
-    public void createGradients(Optimizer optimizer, Node parentDelta) {
+    public void createGradients(HashMap<VariableNode, Node> deltas, Node parentDelta) {
     }
 }

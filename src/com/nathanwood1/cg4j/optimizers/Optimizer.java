@@ -9,11 +9,8 @@ import java.util.HashMap;
 public abstract class Optimizer {
     public HashMap<VariableNode, Node> deltas;
 
-    public Optimizer() {
-        deltas = new HashMap<>();
-    }
-
-    public abstract void minimize(Node node);
+    public abstract void minimize(Node node, HashMap<VariableNode, Node> deltas);
+    public abstract void maximize(Node node, HashMap<VariableNode, Node> deltas);
 
     public abstract void run(Eval eval);
 

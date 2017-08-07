@@ -4,7 +4,10 @@ import com.nathanwood1.cg4j.Eval;
 import com.nathanwood1.cg4j.Tensor;
 import com.nathanwood1.cg4j.nodes.Node;
 import com.nathanwood1.cg4j.nodes.io.ConstantNode;
+import com.nathanwood1.cg4j.nodes.io.VariableNode;
 import com.nathanwood1.cg4j.optimizers.Optimizer;
+
+import java.util.HashMap;
 
 public class SquareNode extends Node {
     public SquareNode(String name, Node child) {
@@ -16,10 +19,15 @@ public class SquareNode extends Node {
     }
 
     @Override
-    public String getNodeClassName() {
+    protected String getNodeClassName() {
         return "SquareNode";
     }
 
+    /**
+     * Use {@code Eval#evaluate(Node)}
+     *
+     * @see Eval#evaluate(Node)
+     */
     @Override
     public Tensor evaluate(Eval e) {
         Tensor in = e.evaluate(children[0]);
@@ -31,7 +39,7 @@ public class SquareNode extends Node {
     }
 
     @Override
-    public void createGradients(Optimizer optimizer, Node parentDelta) {
+    public void createGradients(HashMap<VariableNode, Node> deltas, Node parentDelta) {
         MultiplicationNode mult;
         if (parentDelta == null) {
             mult = new MultiplicationNode(
@@ -55,6 +63,6 @@ public class SquareNode extends Node {
                     )
             );
         }
-        children[0].createGradients(optimizer, mult);
+        children[0].createGradients(deltas, mult);
     }
 }

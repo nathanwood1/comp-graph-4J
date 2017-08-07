@@ -4,14 +4,16 @@ import com.nathanwood1.cg4j.Eval;
 import com.nathanwood1.cg4j.Tensor;
 import com.nathanwood1.cg4j.nodes.Node;
 import com.nathanwood1.cg4j.nodes.io.InputNode;
-import com.nathanwood1.cg4j.nodes.io.OutputNode;
 import com.nathanwood1.cg4j.nodes.io.VariableNode;
 import com.nathanwood1.cg4j.nodes.math.AdditionNode;
 import com.nathanwood1.cg4j.nodes.tensor.MeanNode;
 import com.nathanwood1.cg4j.nodes.math.MultiplicationNode;
 import com.nathanwood1.cg4j.nodes.math.SquareNode;
 import com.nathanwood1.cg4j.nodes.math.SubtractionNode;
+import com.nathanwood1.cg4j.optimizers.AdamOptimizer;
 import com.nathanwood1.cg4j.optimizers.GradientDescentOptimizer;
+
+import java.util.HashMap;
 
 public class LinearRegression {
 
@@ -37,14 +39,13 @@ public class LinearRegression {
          */
         Node y = new MultiplicationNode(x, m);
         y = new AdditionNode(y, c);
-        OutputNode yOut = new OutputNode(y);
 
         /*
          * 'yTarget' is the optimal value for 'y'.
          * We find the mean squared cost through the code below.
          */
         InputNode yTarget = new InputNode(new int[]{-1, 1});
-        OutputNode cost = new OutputNode(new MeanNode(new SquareNode(new SubtractionNode(yTarget, y))));
+        Node cost = new MeanNode(new SquareNode(new SubtractionNode(yTarget, y)));
 
         /*
          * Create a GradientDescentOptimizer and allow it to tweak 'm' and 'c'.
@@ -54,7 +55,13 @@ public class LinearRegression {
                 .tweak(m)
                 .tweak(c);
         optimizer.learningRate = 0.001f;
-        optimizer.minimize(cost);
+
+        /*
+         * Create the deltas and use them to minimize 'cost'.
+         */
+        HashMap<VariableNode, Node> deltas = new HashMap<>();
+        cost.createGradients(deltas, null);
+        optimizer.minimize(cost, deltas);
 
         Tensor[] vals = {
                 new Tensor(new float[]{
@@ -75,7 +82,7 @@ public class LinearRegression {
                 }, new int[]{6, 1})
         };
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 4000; i++) {
             /*
              * Create an evaluator with input values
              */
@@ -89,7 +96,7 @@ public class LinearRegression {
             optimizer.run(eval);
 
             /*
-             * Display the cost every 100000 iterations.
+             * Display the cost every 100 iterations.
              */
             if (i % 100 == 0) {
                 System.out.printf("Error: %f\n", eval.evaluate(cost).getVal(0));

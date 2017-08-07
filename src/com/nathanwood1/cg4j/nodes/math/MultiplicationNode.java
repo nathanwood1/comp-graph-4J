@@ -4,47 +4,56 @@ import com.nathanwood1.cg4j.Eval;
 import com.nathanwood1.cg4j.Tensor;
 import com.nathanwood1.cg4j.exception.IllegalShapeException;
 import com.nathanwood1.cg4j.nodes.Node;
+import com.nathanwood1.cg4j.nodes.io.VariableNode;
 import com.nathanwood1.cg4j.optimizers.Optimizer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class MultiplicationNode extends Node {
     public MultiplicationNode(String name, Node... children) {
         super(children[0].shape, name, children);
         for (int i = 1; i < children.length; i++) {
-            if (!Node.ShapeEndCompatible(children[0].shape, 0, children[i].shape, 0)) {
-                throw new IllegalShapeException(
-                        "Cannot add shapes ("
-                                + Arrays.toString(children[0].shape)
-                                + ", "
-                                + Arrays.toString(children[i].shape)
-                                + ")"
-                );
-            }
+            if (!Arrays.equals(new int[]{1}, children[i].shape))
+                if (!Node.ShapeEndCompatible(children[0].shape, 0, children[i].shape, 0)) {
+                    throw new IllegalShapeException(
+                            "Cannot multiply shapes ("
+                                    + Arrays.toString(children[0].shape)
+                                    + ", "
+                                    + Arrays.toString(children[i].shape)
+                                    + ")"
+                    );
+                }
         }
     }
 
     public MultiplicationNode(Node... children) {
         super(children[0].shape, null, children);
         for (int i = 1; i < children.length; i++) {
-            if (!Node.ShapeEndCompatible(children[0].shape, 0, children[i].shape, 0)) {
-                throw new IllegalShapeException(
-                        "Cannot add shapes ("
-                                + Arrays.toString(children[0].shape)
-                                + ", "
-                                + Arrays.toString(children[i].shape)
-                                + ")"
-                );
-            }
+            if (!Arrays.equals(new int[]{1}, children[i].shape))
+                if (!Node.ShapeEndCompatible(children[0].shape, 0, children[i].shape, 0)) {
+                    throw new IllegalShapeException(
+                            "Cannot multiply shapes ("
+                                    + Arrays.toString(children[0].shape)
+                                    + ", "
+                                    + Arrays.toString(children[i].shape)
+                                    + ")"
+                    );
+                }
         }
     }
 
     @Override
-    public String getNodeClassName() {
+    protected String getNodeClassName() {
         return "MultiplicationNode";
     }
 
+    /**
+     * Use {@code Eval#evaluate(Node)}
+     *
+     * @see Eval#evaluate(Node)
+     */
     @Override
     public Tensor evaluate(Eval e) {
         if (children.length == 1) {
@@ -70,7 +79,7 @@ public class MultiplicationNode extends Node {
     }
 
     @Override
-    public void createGradients(Optimizer optimizer, Node parentDelta) {
+    public void createGradients(HashMap<VariableNode, Node> deltas, Node parentDelta) {
         for (Node child : children) {
             ArrayList<Node> multToAdd = new ArrayList<>();
             for (Node childJ : children) {
@@ -80,7 +89,7 @@ public class MultiplicationNode extends Node {
             }
             multToAdd.add(parentDelta);
             MultiplicationNode m = new MultiplicationNode(multToAdd.toArray(new Node[multToAdd.size()]));
-            child.createGradients(optimizer, m);
+            child.createGradients(deltas, m);
         }
     }
 }

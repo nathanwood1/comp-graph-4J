@@ -7,7 +7,7 @@ package com.nathanwood1.cg4j.exception;
  * {@code
  *
  * InputNode a = new InputNode(new int[]{1});
- * Node out = new ReLUNode(a);
+ * Node out = new ReluNode(a);
  *
  * Eval e = new Eval();
  * e.evaluate(out);
