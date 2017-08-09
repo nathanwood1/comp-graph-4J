@@ -5,11 +5,12 @@ import com.nathanwood1.cg4j.Tensor;
 import com.nathanwood1.cg4j.nodes.io.VariableNode;
 import com.nathanwood1.cg4j.optimizers.Optimizer;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 
 //TODO: ADD JAVADOC FOR ALL NODES
-public abstract class Node {
+public abstract class Node implements Serializable {
     private static int stringGlobalCounter = 0;
 
     public final String name;
