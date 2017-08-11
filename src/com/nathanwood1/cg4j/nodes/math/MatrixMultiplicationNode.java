@@ -94,7 +94,7 @@ public class MatrixMultiplicationNode extends Node {
         int[] out;
         if (!aTransposed && !bTransposed) {
             return FormatShape(aShape, bShape);
-        } else if (!aTransposed && bTransposed) {
+        } else if (!aTransposed/* && bTransposed*/) {
             if (aShape.length < 2) {
                 throw new IllegalShapeException(
                         "Cannot matrix multiply shapes ("
@@ -140,7 +140,7 @@ public class MatrixMultiplicationNode extends Node {
             }
             out[out.length - 2] = aShape[aShape.length - 2];
             out[out.length - 1] = bShape[bShape.length - 2];
-        } else if (aTransposed && !bTransposed) {
+        } else if (/*aTransposed && */!bTransposed) {
             if (aShape.length < 2) {
                 throw new IllegalShapeException(
                         "Cannot matrix multiply shapes ("
